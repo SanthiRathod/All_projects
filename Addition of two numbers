@@ -1,0 +1,7 @@
+int addition(int A, int B){
+       return A+B;
+    }
+int main()
+{
+   addition(10,20);
+}

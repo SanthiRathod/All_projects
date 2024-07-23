@@ -1,0 +1,19 @@
+import os
+os.environ["HF_HUB_DISABLE_SYMLINKS_WARNING"] = "1"
+from transformers import AutoModelForCausalLM, AutoTokenizer
+tokenizer = AutoTokenizer.from_pretrained("microsoft/DialoGPT-medium")
+model = AutoModelForCausalLM.from_pretrained("microsoft/DialoGPT-medium")
+def get_transformer_response(input_text):
+    inputs = tokenizer.encode(input_text + tokenizer.eos_token, return_tensors='pt')
+    response_ids = model.generate(inputs, max_length=1000, pad_token_id=tokenizer.eos_token_id)
+    response = tokenizer.decode(response_ids[:, inputs.shape[-1]:][0], skip_special_tokens=True)
+    return response
+print("Hi, I'm your advanced chatbot. How can I assist you today?")
+while True:
+    user_input = input("You: ")
+    if user_input.lower() in ["quit", "exit"]:
+        print("Chatbot: Bye, take care. See you soon.")
+        break
+
+    transformer_response = get_transformer_response(user_input)
+    print(f"Chatbot: {transformer_response}")
